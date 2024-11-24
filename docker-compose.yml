@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  chamber:
+    build: .
+    ports:
+      - "8888:8888"
+    environment:
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+      - FLASK_ENV=${FLASK_ENV:-development}
+      - CHAMBER_API_KEY=${CHAMBER_API_KEY}
+    volumes:
+      - ./src:/app
+      - spell_archives:/app/archives
+
+volumes:
+  spell_archives:

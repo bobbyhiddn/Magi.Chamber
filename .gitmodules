@@ -1,0 +1,4 @@
+[submodule "src/grimoire"]
+	path = src/grimoire
+	url = https://github.com/bobbyhiddn/Magi.Spells.git
+	branch = main
