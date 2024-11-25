@@ -4,7 +4,6 @@ import hashlib
 import os
 import datetime
 import logging
-import re
 import ast
 
 class MagiChamber:
@@ -17,9 +16,15 @@ class MagiChamber:
         logging.basicConfig(level=logging.DEBUG)
         self.logger = logging.getLogger(__name__)
         
-        # Container paths
-        self.grimoire = Path("grimoire/spells")
-        self.archives = Path("archives")
+        # Container paths - using absolute paths
+        self.base_path = Path(os.path.dirname(os.path.dirname(__file__)))  # src directory
+        self.grimoire = self.base_path / "grimoire" / "spells"
+        self.archives = self.base_path / "archives"
+        
+        # Log the paths for debugging
+        self.logger.debug(f"Base path: {self.base_path}")
+        self.logger.debug(f"Grimoire path: {self.grimoire}")
+        self.logger.debug(f"Archives path: {self.archives}")
 
     def _extract_spell_info(self, spell_path):
         """Extract spell information including Click command help text"""
@@ -96,6 +101,20 @@ class MagiChamber:
                 "spells_available": bool(list(self.grimoire.glob("*.py")))
             })
 
+        @self.app.route("/debug/paths", methods=["GET"])
+        def debug_paths():
+            """Debug endpoint to check paths"""
+            return jsonify({
+                "base_path": str(self.base_path),
+                "grimoire_path": str(self.grimoire),
+                "grimoire_exists": self.grimoire.exists(),
+                "available_spells": [
+                    spell.stem for spell in self.grimoire.glob("*.py")
+                    if spell.name != "__init__.py"
+                ],
+                "grimoire_contents": os.listdir(str(self.grimoire)) if self.grimoire.exists() else []
+            })
+
         @self.app.route("/spells", methods=["GET"])
         def list_spells():
             """Lists all available spells in the chamber"""
@@ -109,13 +128,13 @@ class MagiChamber:
                     if spell_path.name == "__init__.py":
                         continue
                     spell_info = self._extract_spell_info(spell_path)
-                    if spell_info['command']:  # Only format if we found a command
+                    if spell_info and spell_info['command']:  # Only format if we found a command
                         formatted_desc = f"{spell_info['name']}"
                         if spell_info['alias']:
                             formatted_desc += f": '{spell_info['alias']}'"
                         formatted_desc += f" - {spell_info['description']}"
                         spell_info['formatted_description'] = formatted_desc
-                    spells.append(spell_info)
+                        spells.append(spell_info)
                 except Exception as e:
                     self.logger.error(f"Error processing spell {spell_path}: {str(e)}", exc_info=True)
                     continue
@@ -129,10 +148,47 @@ class MagiChamber:
         @self.app.route("/spells/<spell_name>", methods=["GET"])
         def get_spell(spell_name):
             """Retrieve a specific spell from the chamber"""
+            # Strip .py extension if provided
+            spell_name = spell_name.replace('.py', '')
+            spell_path = self.grimoire / f"{spell_name}.py"
+            
+            self.logger.debug(f"Attempting to retrieve spell from: {spell_path}")
+            
+            if not spell_path.exists():
+                self.logger.error(f"Spell not found: {spell_path}")
+                abort(404, description=f"Spell '{spell_name}' not found in chamber")
+            
+            try:
+                return send_file(
+                    spell_path,
+                    mimetype='text/x-python',
+                    as_attachment=True,
+                    download_name=f"{spell_name}.py"
+                )
+            except Exception as e:
+                self.logger.error(f"Error serving spell {spell_name}: {str(e)}", exc_info=True)
+                abort(500, description=f"Error retrieving spell: {str(e)}")
+
+        @self.app.route("/spells/<spell_name>/content", methods=["GET"])
+        def get_spell_content(spell_name):
+            """Retrieve a specific spell's content from the chamber"""
             spell_path = self.grimoire / f"{spell_name}.py"
             if not spell_path.exists():
-                abort(404, description="Spell not found in chamber")
-            return send_file(spell_path)
+                abort(404, description=f"Spell '{spell_name}' not found in chamber")
+            try:
+                with open(spell_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                return jsonify({
+                    "name": spell_name,
+                    "content": content,
+                    "hash": hashlib.sha256(content.encode()).hexdigest(),
+                    "last_modified": datetime.datetime.fromtimestamp(
+                        os.path.getmtime(spell_path)
+                    ).isoformat()
+                })
+            except Exception as e:
+                self.logger.error(f"Error reading spell {spell_name}: {str(e)}")
+                abort(500, description="Error reading spell content")
 
         @self.app.route("/manifest", methods=["GET"])
         def get_manifest():
@@ -152,11 +208,12 @@ class MagiChamber:
                     if spell_path.name == "__init__.py":
                         continue
                     spell_info = self._extract_spell_info(spell_path)
-                    manifest["spells"][spell_path.stem] = {
-                        "hash": spell_info["hash"],
-                        "modified": spell_info["last_modified"],
-                        "description": spell_info["description"]
-                    }
+                    if spell_info:
+                        manifest["spells"][spell_path.stem] = {
+                            "hash": spell_info["hash"],
+                            "modified": spell_info["last_modified"],
+                            "description": spell_info["description"]
+                        }
                 except Exception as e:
                     self.logger.error(f"Error processing spell {spell_path}: {str(e)}")
                     continue

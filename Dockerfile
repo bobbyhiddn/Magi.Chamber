@@ -31,5 +31,3 @@ EXPOSE 8888
 
 # Run the Gunicorn server from the src directory
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8888", "main:app"]
-# Run the Gunicorn server from the src directory
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8888", "main:app"]
