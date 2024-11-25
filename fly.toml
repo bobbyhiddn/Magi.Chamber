@@ -1,0 +1,34 @@
+app = "magi-chamber"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8888
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[http_service.concurrency]
+  type = "requests"
+  hard_limit = 250
+  soft_limit = 200
+
+[[http_service.checks]]
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "30s"
+  method = "GET"
+  path = "/health"
+  protocol = "http"
+  tls_skip_verify = false
+
+[deploy]
+  strategy = "rolling"
+  release_command = "python -m compileall ."
+
+[env]
+  FLASK_ENV = "production"
+  PYTHONPATH = "/app/src"

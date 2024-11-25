@@ -7,10 +7,11 @@ services:
       - "8888:8888"
     environment:
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
-      - FLASK_ENV=${FLASK_ENV:-development}
       - CHAMBER_API_KEY=${CHAMBER_API_KEY}
     volumes:
-      - ./src:/app
+      - ./src/chamber:/app/src/chamber
+      - ./src/main.py:/app/src/main.py
+      - ./src/requirements.txt:/app/src/requirements.txt
       - spell_archives:/app/archives
 
 volumes:
