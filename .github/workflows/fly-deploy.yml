@@ -6,6 +6,7 @@ on:
     branches:
       - main
   workflow_dispatch:
+    
 jobs:
   deploy:
     name: Deploy app
@@ -23,7 +24,29 @@ jobs:
           
       - name: Update Submodules
         run: |
-          git submodule update --remote --merge
+          # Initialize submodules if they haven't been
+          git submodule init
+          
+          # Configure git to allow unrelated histories
+          cd src/grimoire
+          git config pull.rebase false
+          git config pull.allowUnrelatedHistories true
+          
+          # Fetch all branches
+          git fetch origin
+          
+          # Try to merge main branch
+          git checkout main
+          git pull origin main --allow-unrelated-histories
+          
+          # Return to parent directory
+          cd ../..
+          
+          # Update all submodules to their latest commits
+          git submodule update --remote --merge || {
+            echo "Error updating submodules, attempting alternative update..."
+            git submodule foreach 'git fetch origin main && git reset --hard origin/main'
+          }
 
       - name: Load environment variables
         run: |
@@ -32,7 +55,9 @@ jobs:
             export $(grep -v '^#' .env | xargs)
             echo "Environment variables loaded"
           fi
+
       - uses: superfly/flyctl-actions/setup-flyctl@master
+      
       - name: Set secrets on Fly.io
         run: |
           echo "Setting secrets on Fly.io..."
@@ -40,5 +65,5 @@ jobs:
             FLASK_SECRET_KEY="$FLASK_SECRET_KEY" \
             CHAMBER_API_KEY="$CHAMBER_API_KEY" \
             WEBHOOK_SECRET="$WEBHOOK_SECRET"
+            
       - run: flyctl deploy --remote-only
-
