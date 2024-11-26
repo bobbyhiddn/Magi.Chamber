@@ -1,6 +1,3 @@
-# See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
-# The goal is to deploy the app to Fly.io using GitHub Actions whenever we commit to main or Magi.Spells triggers a manual deploy.
-
 name: Fly Deploy
 on:
   push:
@@ -17,37 +14,33 @@ jobs:
       CHAMBER_API_KEY: ${{ secrets.CHAMBER_API_KEY }}
       WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
     runs-on: ubuntu-latest
-    concurrency: deploy-group    # optional: ensure only one action runs at a time
+    concurrency: deploy-group
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'  # Add this to checkout submodules
+          submodules: 'recursive'
           
       - name: Update Submodules
         run: |
-          # Initialize submodules if they haven't been
+          # Initialize submodules
           git submodule init
           
-          # Configure git to allow unrelated histories(This has been an issue)
+          # Update submodules to latest remote version
           cd src/grimoire
-          git config pull.rebase false
-          git config pull.allowUnrelatedHistories true
           
-          # Fetch all branches
-          git fetch origin
+          # Save any local changes
+          git stash
           
-          # Try to merge main branch
+          # Make sure we're on main branch
+          git fetch origin main
           git checkout main
-          git pull origin main --allow-unrelated-histories
+          git reset --hard origin/main
+          
+          # Pull latest changes
+          git pull origin main
           
           # Return to parent directory
           cd ../..
-          
-          # Update all submodules to their latest commits
-          git submodule update --remote --merge || {
-            echo "Error updating submodules, attempting alternative update..."
-            git submodule foreach 'git fetch origin main && git reset --hard origin/main'
-          }
 
       - name: Load environment variables
         run: |
