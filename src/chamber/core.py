@@ -249,22 +249,26 @@ class MagiChamber:
 
             def update_spells():
                 try:
-                    repo_path = self.base_path  # The base path of your repository
+                    repo_path = self.base_path
                     self.logger.debug(f"Updating repository at {repo_path}")
 
-                    repo = git.Repo(repo_path)
                     self.logger.debug("Performing git fetch")
-                    repo.remotes.origin.fetch()
+                    subprocess.run(["git", "fetch"], cwd=repo_path, check=True)
 
                     self.logger.debug("Checking out the latest code")
-                    repo.git.checkout('main')
-                    repo.remotes.origin.pull()
+                    subprocess.run(["git", "checkout", "main"], cwd=repo_path, check=True)
+                    subprocess.run(["git", "pull"], cwd=repo_path, check=True)
 
-                    # Update submodules
                     self.logger.debug("Updating submodules")
-                    repo.submodule_update(recursive=True, init=True, remote=True)
+                    subprocess.run(
+                        ["git", "submodule", "update", "--recursive", "--init", "--remote"],
+                        cwd=repo_path,
+                        check=True
+                    )
 
                     self.logger.info("Repository and submodules updated successfully.")
+                except subprocess.CalledProcessError as e:
+                    self.logger.error(f"Git command failed: {e}", exc_info=True)
                 except Exception as e:
                     self.logger.error(f"Error updating repository: {e}", exc_info=True)
 
