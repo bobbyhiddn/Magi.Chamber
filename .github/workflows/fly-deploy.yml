@@ -21,10 +21,11 @@ jobs:
         with:
           submodules: 'recursive'  # Add this to checkout submodules
           
-      - name: Update submodules
+      - name: Update Submodules
         run: |
-          git submodule update --remote --merge
-          
+          git submodule update --init --recursive
+          git submodule update --remote --merge --allow-unrelated-histories
+
       - name: Load environment variables
         run: |
           if [ -f .env ]; then
