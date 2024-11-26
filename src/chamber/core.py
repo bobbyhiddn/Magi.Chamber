@@ -1,10 +1,14 @@
-from flask import Flask, jsonify, send_file, abort, render_template
+from flask import Flask, jsonify, send_file, abort, render_template, request
 from pathlib import Path
 import hashlib
 import os
 import datetime
 import logging
 import ast
+import hmac
+import subprocess
+import git  # Import GitPython
+import threading
 
 class MagiChamber:
     def __init__(self):
@@ -25,6 +29,11 @@ class MagiChamber:
         self.logger.debug(f"Base path: {self.base_path}")
         self.logger.debug(f"Grimoire path: {self.grimoire}")
         self.logger.debug(f"Archives path: {self.archives}")
+
+        # Load the webhook secret from environment variables
+        self.WEBHOOK_SECRET = os.environ.get('WEBHOOK_SECRET')
+        # Path to your utility script
+        self.UTILITY_SCRIPT_PATH = '../utility_script.sh'  # Update this path accordingly
 
     def _extract_spell_info(self, spell_path):
         """Extract spell information including Click command help text"""
@@ -225,3 +234,56 @@ class MagiChamber:
         def index():
             """Render the index page."""
             return render_template("index.html")
+        
+        @self.app.route("/webhook", methods=["POST"])
+        def webhook():
+            """Webhook endpoint to trigger the spells update."""
+            # Verify the request using the secret token
+            signature = request.headers.get('X-Hub-Signature-256')
+            if not self._verify_signature(request.data, signature):
+                self.logger.warning("Unauthorized webhook attempt detected.")
+                abort(403)
+
+            self.logger.info("Authorized webhook received. Starting spells update.")
+
+            def update_spells():
+                try:
+                    repo_path = self.base_path  # The base path of your repository
+                    self.logger.debug(f"Updating repository at {repo_path}")
+
+                    repo = git.Repo(repo_path)
+                    self.logger.debug("Performing git fetch")
+                    repo.remotes.origin.fetch()
+
+                    self.logger.debug("Checking out the latest code")
+                    repo.git.checkout('main')
+                    repo.remotes.origin.pull()
+
+                    # Update submodules
+                    self.logger.debug("Updating submodules")
+                    repo.submodule_update(recursive=True, init=True, remote=True)
+
+                    self.logger.info("Repository and submodules updated successfully.")
+                except Exception as e:
+                    self.logger.error(f"Error updating repository: {e}", exc_info=True)
+
+            # Run the update in a separate thread
+            thread = threading.Thread(target=update_spells)
+            thread.start()
+
+            return 'Spells update initiated.', 200
+
+    def _verify_signature(self, payload, signature):
+        """Verify the HMAC SHA256 signature of the incoming request."""
+        if not self.WEBHOOK_SECRET:
+            self.logger.error("WEBHOOK_SECRET is not set.")
+            return False
+        if not signature:
+            self.logger.warning("No signature provided in the request headers.")
+            return False
+        sha_name, signature = signature.split('=')
+        if sha_name != 'sha256':
+            self.logger.warning(f"Unsupported signature algorithm: {sha_name}")
+            return False
+        mac = hmac.new(self.WEBHOOK_SECRET.encode(), msg=payload, digestmod=hashlib.sha256)
+        return hmac.compare_digest(mac.hexdigest(), signature)

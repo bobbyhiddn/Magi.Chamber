@@ -1,8 +1,10 @@
 # Use an official Python runtime as the base image
 FROM python:3.11-slim
 
-# Install git for submodule
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+# Install git and other dependencies
+RUN apt-get update && \
+    apt-get install -y git && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container
 WORKDIR /app
@@ -19,15 +21,11 @@ COPY . .
 # Initialize and update submodules
 RUN git submodule update --init --recursive
 
-# Create archives directory
-RUN mkdir -p archives
-
-# Make sure we're in the src directory for gunicorn
-WORKDIR /app/src
-
 # Expose the port the app will run on
 EXPOSE 8888
 
+# Make sure we're in the src directory for gunicorn
+WORKDIR /app/src
 
 # Run the Gunicorn server from the src directory
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8888", "main:app"]

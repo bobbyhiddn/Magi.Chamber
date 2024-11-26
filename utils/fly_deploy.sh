@@ -59,7 +59,8 @@ fi
 print_status "Setting secrets on Fly.io..."
 flyctl secrets set \
     FLASK_SECRET_KEY="$FLASK_SECRET_KEY" \
-    CHAMBER_API_KEY="$CHAMBER_API_KEY"
+    CHAMBER_API_KEY="$CHAMBER_API_KEY" \
+    WEBHOOK_SECRET="$WEBHOOK_SECRET"
 
 print_success "Secrets set successfully on Fly.io!"
 
