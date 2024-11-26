@@ -13,12 +13,13 @@ def create_app():
     chamber.setup_routes()
     
     # Basic configuration
+# In main.py
     chamber.app.config.update(
         MAX_CONTENT_LENGTH=16 * 1024 * 1024,  # 16MB max-size
         JSON_SORT_KEYS=False,
         SECRET_KEY=os.getenv('FLASK_SECRET_KEY'),
-        # Add the markdown pages directory to the config
-        MARKDOWN_PAGES_DIR=os.path.join(os.path.dirname(__file__), 'markdown_pages')
+        # Update this line to point to the correct directory
+        MARKDOWN_PAGES_DIR=os.path.join(os.path.dirname(__file__), 'chamber', 'pages')
     )
 
     # Add route for serving markdown pages
