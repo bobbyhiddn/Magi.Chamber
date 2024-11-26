@@ -1,4 +1,5 @@
 # See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
+# The goal is to deploy the app to Fly.io using GitHub Actions whenever we commit to main or Magi.Spells triggers a manual deploy.
 
 name: Fly Deploy
 on:
