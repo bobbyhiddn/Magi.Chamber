@@ -23,7 +23,6 @@ jobs:
           
       - name: Update Submodules
         run: |
-          git submodule update --init --recursive
           git submodule update --remote --merge --allow-unrelated-histories
 
       - name: Load environment variables
