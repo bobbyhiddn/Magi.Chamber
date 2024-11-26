@@ -55,6 +55,12 @@ else
     print_error ".env file not found!"
 fi
 
+# Update submodules before deployment
+print_status "Updating submodules..."
+git submodule update --init --recursive
+git pull --recurse-submodules
+print_success "Submodules updated"
+
 # Set the secrets using flyctl
 print_status "Setting secrets on Fly.io..."
 flyctl secrets set \
