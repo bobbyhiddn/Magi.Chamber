@@ -19,6 +19,7 @@ jobs:
             export $(grep -v '^#' .env | xargs)
             echo "Environment variables loaded"
           fi
+      - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Set secrets on Fly.io
         run: |
           echo "Setting secrets on Fly.io..."
@@ -26,7 +27,6 @@ jobs:
             FLASK_SECRET_KEY="$FLASK_SECRET_KEY" \
             CHAMBER_API_KEY="$CHAMBER_API_KEY" \
             WEBHOOK_SECRET="$WEBHOOK_SECRET"
-      - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
         env:
           FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
