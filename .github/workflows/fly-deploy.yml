@@ -13,11 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Load environment variables
-        if: '[ -f .env ]'
         run: |
-          echo "Loading environment variables..."
-          export $(grep -v '^#' .env | xargs)
-          echo "Environment variables loaded"
+          if [ -f .env ]; then
+            echo "Loading environment variables..."
+            export $(grep -v '^#' .env | xargs)
+            echo "Environment variables loaded"
+          fi
       - name: Set secrets on Fly.io
         run: |
           echo "Setting secrets on Fly.io..."
