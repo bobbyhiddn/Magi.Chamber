@@ -18,29 +18,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: false  # Don't auto-checkout submodules
           
       - name: Update Submodules
         run: |
-          # Initialize submodules
-          git submodule init
+          # Remove existing submodule directory if it exists
+          rm -rf src/grimoire
           
-          # Update submodules to latest remote version
+          # Reinitialize submodules from scratch
+          git submodule init
+          git submodule update
+          
+          # Enter grimoire directory and ensure we're up to date
           cd src/grimoire
           
-          # Save any local changes
-          git stash
+          # Set up git config
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
           
-          # Make sure we're on main branch
+          # Fetch and checkout latest main
           git fetch origin main
           git checkout main
-          git reset --hard origin/main
-          
-          # Pull latest changes
           git pull origin main
           
-          # Return to parent directory
+          # Return to root
           cd ../..
+          
+          # Update the parent repo's reference
+          git add src/grimoire
+          git commit -m "Update submodule to latest main" || echo "No changes to commit"
 
       - name: Load environment variables
         run: |
