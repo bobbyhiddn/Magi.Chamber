@@ -57,8 +57,8 @@ fi
 
 # Update submodules before deployment
 print_status "Updating submodules..."
-git submodule update --init --recursive
 git pull --recurse-submodules
+git submodule update --init --recursive
 print_success "Submodules updated"
 
 # Set the secrets using flyctl
