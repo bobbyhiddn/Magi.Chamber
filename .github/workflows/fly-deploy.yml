@@ -27,7 +27,7 @@ jobs:
           # Initialize submodules if they haven't been
           git submodule init
           
-          # Configure git to allow unrelated histories
+          # Configure git to allow unrelated histories(This has been an issue)
           cd src/grimoire
           git config pull.rebase false
           git config pull.allowUnrelatedHistories true
