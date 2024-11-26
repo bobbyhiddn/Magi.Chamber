@@ -21,16 +21,6 @@ def create_app():
         MARKDOWN_PAGES_DIR=os.path.join(os.path.dirname(__file__), 'markdown_pages')
     )
 
-    @chamber.app.route('/')
-    def index():
-        """Render the index page with a list of markdown pages."""
-        markdown_dir = chamber.app.config['MARKDOWN_PAGES_DIR']
-        pages = [
-            f.replace('.md', '') for f in os.listdir(markdown_dir) if f.endswith('.md')
-        ]
-        return render_template("index.html", title="Magi Chamber", pages=pages)
-
-
     # Add route for serving markdown pages
     @chamber.app.route('/page/<path:page_name>')
     def render_markdown_page(page_name):

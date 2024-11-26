@@ -10,6 +10,11 @@ services:
       - CHAMBER_API_KEY=${CHAMBER_API_KEY}
       - WEBHOOK_SECRET=${WEBHOOK_SECRET}
     volumes:
-      - ./spell_archives:/app/spell_archives
+      - ./src/chamber:/app/src/chamber
+      - ./src/main.py:/app/src/main.py
+      - ./src/requirements.txt:/app/src/requirements.txt
+      - spell_archives:/app/archives
+      - ./src/templates:/app/src/templates
+      - ./src/static:/app/src/static
 volumes:
   spell_archives:

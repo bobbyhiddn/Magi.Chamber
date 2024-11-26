@@ -234,6 +234,7 @@ class MagiChamber:
         def index():
             """Render the index page."""
             return render_template("index.html")
+
         
         @self.app.route("/webhook", methods=["POST"])
         def webhook():
