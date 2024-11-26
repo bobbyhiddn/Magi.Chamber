@@ -3,9 +3,17 @@ from chamber.core import MagiChamber
 import os
 from dotenv import load_dotenv
 import markdown  # Import the markdown library
+from pathlib import Path
+from dataclasses import dataclass
+from typing import List, Dict
 
 # Load environment variables
 load_dotenv()
+
+@dataclass
+class Page:
+    name: str
+    path: str
 
 def create_app():
     """Initialize and configure the Magi.Chamber server"""
@@ -60,6 +68,36 @@ def create_app():
     return chamber.app
 
 app = create_app()
+
+def get_markdown_structure() -> Dict[str, List[Page]]:
+    """Get all markdown files organized by directory"""
+    markdown_dir = app.config['MARKDOWN_PAGES_DIR']
+    structure = {}
+    
+    for path in Path(markdown_dir).rglob('*.md'):
+        # Get relative path from markdown dir
+        rel_path = path.relative_to(markdown_dir)
+        # Get section (folder name or 'main' for root files)
+        section = rel_path.parent.name if rel_path.parent.name else 'main'
+        # Get page name without .md extension
+        page_name = path.stem
+        # Get full path for URL without .md extension
+        page_path = str(rel_path.with_suffix('')).replace('\\', '/')
+        
+        if section not in structure:
+            structure[section] = []
+        
+        structure[section].append(Page(
+            name=page_name.replace('_', ' '),
+            path=page_path
+        ))
+    
+    return structure
+
+@app.context_processor
+def inject_nav_structure():
+    """Make nav_structure available to all templates"""
+    return {'nav_structure': get_markdown_structure()}
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8888))

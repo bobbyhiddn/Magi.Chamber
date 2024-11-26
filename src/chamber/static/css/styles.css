@@ -88,3 +88,30 @@ thead th {
 .highlight .gr { color: #f00 } /* Generic.Error */
 .highlight .gh { color: #030; } /* Generic.Heading */
 .highlight .gi { background-color: #cfc; border: 1px solid #0c0 } /* Generic.Inserted */
+
+/* Add to your existing styles.css */
+.dropdown-menu {
+    background-color: #343a40;
+    border: 1px solid rgba(255,255,255,.1);
+}
+
+.dropdown-item {
+    color: rgba(255,255,255,.5);
+}
+
+.dropdown-item:hover {
+    color: rgba(255,255,255,.75);
+    background-color: #2c3136;
+}
+
+.nav-link {
+    color: rgba(255,255,255,.5) !important;
+}
+
+.nav-link:hover {
+    color: rgba(255,255,255,.75) !important;
+}
+
+.dropdown-toggle::after {
+    vertical-align: middle;
+}
