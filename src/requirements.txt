@@ -3,3 +3,5 @@ python-dotenv==1.0.1
 gunicorn==21.2.0
 click==8.1.7
 GitPython==3.1.31
+markdown==3.4.1
+Pygments==2.15.1

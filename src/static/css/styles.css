@@ -1,0 +1,57 @@
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+nav, footer {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+}
+
+nav a, footer a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 1em;
+}
+
+.content {
+    padding: 2em;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+code {
+    background-color: #f4f4f4;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* Optional: Style code blocks */
+pre code {
+    padding: 1em;
+    background-color: #f8f9fa; /* Bootstrap light gray */
+    border: 1px solid #e1e1e8;
+    border-radius: 4px;
+}
+
+/* Optional: Style tables */
+table {
+    width: 100%;
+}
+
+table, th, td {
+    border: 1px solid #dee2e6; /* Bootstrap border color */
+}
+
+th, td {
+    padding: 0.75rem;
+}
+
+thead th {
+    background-color: #e9ecef; /* Bootstrap light background */
+}
