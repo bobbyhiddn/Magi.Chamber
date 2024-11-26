@@ -18,6 +18,13 @@ jobs:
     concurrency: deploy-group    # optional: ensure only one action runs at a time
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'  # Add this to checkout submodules
+          
+      - name: Update submodules
+        run: |
+          git submodule update --remote --merge
+          
       - name: Load environment variables
         run: |
           if [ -f .env ]; then
