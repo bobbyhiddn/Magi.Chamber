@@ -35,12 +35,25 @@ def create_app():
         with open(md_file, 'r', encoding='utf-8') as f:
             md_content = f.read()
 
-        # Convert markdown to HTML
+        # Convert markdown to HTML with syntax highlighting
         html_content = markdown.markdown(
-                md_content, 
-                extensions=['fenced_code', 'codehilite', 'toc']
-            )
-
+            md_content, 
+            extensions=[
+                'fenced_code',
+                'codehilite',
+                'tables',
+                'nl2br',
+                'toc'
+            ],
+            extension_configs={
+                'codehilite': {
+                    'css_class': 'highlight',
+                    'guess_lang': True,
+                    'use_pygments': True,
+                    'noclasses': False
+                }
+            }
+        )
 
         return render_template('markdown_page.html', content=html_content, title=page_name.replace('_', ' ').title())
 

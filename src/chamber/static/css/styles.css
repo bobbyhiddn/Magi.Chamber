@@ -1,4 +1,3 @@
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -25,18 +24,36 @@ h1, h2, h3 {
     color: #333;
 }
 
+/* Inline code styling */
 code {
-    background-color: #f4f4f4;
-    padding: 2px 4px;
-    border-radius: 4px;
+    background-color: #f8f9fa;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-size: 85%;
+    font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace;
 }
 
-/* Optional: Style code blocks */
-pre code {
-    padding: 1em;
-    background-color: #f8f9fa; /* Bootstrap light gray */
-    border: 1px solid #e1e1e8;
+/* Code block styling */
+pre {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
     border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+pre code {
+    display: block;
+    background: none;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    overflow-wrap: normal;
+    line-height: 1.5;
+    tab-size: 4;
+    hyphens: none;
+    font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace;
 }
 
 /* Optional: Style tables */
@@ -55,3 +72,19 @@ th, td {
 thead th {
     background-color: #e9ecef; /* Bootstrap light background */
 }
+
+/* Syntax highlighting colors */
+.highlight .hll { background-color: #ffc; }
+.highlight .c { color: #999; font-style: italic; } /* Comment */
+.highlight .err { color: #a00; background-color: #faa } /* Error */
+.highlight .k { color: #069; } /* Keyword */
+.highlight .o { color: #555 } /* Operator */
+.highlight .cm { color: #09f; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #099 } /* Comment.Preproc */
+.highlight .c1 { color: #999; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999; } /* Comment.Special */
+.highlight .gd { background-color: #fcc; border: 1px solid #c00 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #f00 } /* Generic.Error */
+.highlight .gh { color: #030; } /* Generic.Heading */
+.highlight .gi { background-color: #cfc; border: 1px solid #0c0 } /* Generic.Inserted */
