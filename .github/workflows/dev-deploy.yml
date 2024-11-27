@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
-      FLY_API_TOKEN: ${{ secrets.DEV_FLY_API_TOKEN }}
+      DEV_FLY_API_TOKEN: ${{ secrets.DEV_FLY_API_TOKEN }}
       CHAMBER_API_KEY: ${{ secrets.CHAMBER_API_KEY }}
       WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
     
