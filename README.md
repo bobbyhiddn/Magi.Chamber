@@ -2,6 +2,10 @@
 
 A mystical repository for MAGI CLI spells, serving as the astral plane where spells reside until pondered by magi.
 
+It serves as both a spell repository and a devlog for the MAGI CLI project at this site:
+
+- [Magi.Chamber.fly.dev](https://magi-chamber.fly.dev)
+
 ## Setup
 
 1. Create your .env file:
