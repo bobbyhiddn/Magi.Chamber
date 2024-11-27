@@ -1,0 +1,20 @@
+name: Dev Chamber Deploy
+on:
+  push:
+    branches:
+      - dev    # Triggers on pushes to dev branch
+
+jobs:
+  deploy:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    env:
+      FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      CHAMBER_API_KEY: ${{ secrets.CHAMBER_API_KEY }}
+      WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+    
+    steps:
+      # Your existing deployment steps, but targeting dev-chamber
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only --app dev-chamber
