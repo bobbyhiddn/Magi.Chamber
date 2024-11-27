@@ -14,8 +14,6 @@ load_dotenv()
 class Page:
     name: str
     path: str
-    children: Dict[str, List['Page']]  # For subfolders
-    is_folder: bool = False
 
 def create_app():
     """Initialize and configure the Magi.Chamber server"""
@@ -71,62 +69,29 @@ def create_app():
 
 app = create_app()
 
-def get_markdown_structure() -> Dict[str, Page]:
-    """Get all markdown files organized by directory with nested structure"""
+def get_markdown_structure() -> Dict[str, List[Page]]:
+    """Get all markdown files organized by directory"""
     markdown_dir = app.config['MARKDOWN_PAGES_DIR']
     structure = {}
     
-    # Helper function to get or create a folder in the structure
-    def get_or_create_folder(folder_path: str, parent_dict: Dict[str, Page]) -> Page:
-        folder_name = folder_path.split('/')[-1] or 'main'
-        if folder_name not in parent_dict:
-            parent_dict[folder_name] = Page(
-                name=folder_name.replace('_', ' '),
-                path=folder_path,
-                children={},
-                is_folder=True
-            )
-        return parent_dict[folder_name]
-
     for path in Path(markdown_dir).rglob('*.md'):
         # Get relative path from markdown dir
         rel_path = path.relative_to(markdown_dir)
-        parts = list(rel_path.parts)
+        # Get section (folder name or 'main' for root files)
+        section = rel_path.parent.name if rel_path.parent.name else 'main'
+        # Get page name without .md extension
+        page_name = path.stem
+        # Get full path for URL without .md extension
+        page_path = str(rel_path.with_suffix('')).replace('\\', '/')
         
-        # Handle files in root directory
-        if len(parts) == 1:
-            if 'main' not in structure:
-                structure['main'] = Page(
-                    name='Main',
-                    path='',
-                    children={},
-                    is_folder=True
-                )
-            structure['main'].children[path.stem] = Page(
-                name=path.stem.replace('_', ' '),
-                path=path.stem,
-                children={},
-            )
-            continue
-
-        # Handle files in subdirectories
-        current_dict = structure
-        current_path = []
+        if section not in structure:
+            structure[section] = []
         
-        # Process all folder levels except the last part (filename)
-        for part in parts[:-1]:
-            current_path.append(part)
-            folder = get_or_create_folder('/'.join(current_path), current_dict)
-            current_dict = folder.children
-
-        # Add the file to the last folder
-        file_name = parts[-1].replace('.md', '')
-        current_dict[file_name] = Page(
-            name=file_name.replace('_', ' '),
-            path='/'.join(parts[:-1] + [file_name]),
-            children={},
-        )
-
+        structure[section].append(Page(
+            name=page_name.replace('_', ' '),
+            path=page_path
+        ))
+    
     return structure
 
 @app.context_processor
