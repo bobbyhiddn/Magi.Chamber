@@ -1,24 +1,23 @@
 name: Fly Deploy
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
-    
+
 jobs:
   deploy:
     name: Deploy app
+    runs-on: ubuntu-latest
     env:
       FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
       FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       CHAMBER_API_KEY: ${{ secrets.CHAMBER_API_KEY }}
       WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
-    runs-on: ubuntu-latest
     concurrency: deploy-group
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false  # Don't auto-checkout submodules
+          submodules: false
           
       - name: Configure Git
         run: |
@@ -30,6 +29,9 @@ jobs:
           # Define submodule paths
           SUBMODULES=("src/grimoire" "src/chamber/pages")
           
+          # Get root directory
+          ROOT_DIR=$(pwd)
+          
           # Initialize submodules
           git submodule init
           git submodule update
@@ -38,11 +40,15 @@ jobs:
           for submodule in "${SUBMODULES[@]}"; do
             echo "Processing submodule: $submodule"
             
-            # Remove existing submodule directory if it exists
-            rm -rf "$submodule"
+            if [ ! -d "$submodule" ]; then
+              echo "Creating directory: $submodule"
+              mkdir -p "$submodule"
+            fi
             
             # Enter submodule directory
-            cd "$submodule"
+            cd "$ROOT_DIR/$submodule" || exit 1
+            
+            echo "Current directory: $(pwd)"
             
             # Configure git locally for the submodule
             git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -54,23 +60,13 @@ jobs:
             git pull origin main
             
             # Return to root
-            cd $(git rev-parse --show-toplevel)
+            cd "$ROOT_DIR" || exit 1
             
             # Update the parent repo's reference
             git add "$submodule"
             git commit -m "Update submodule $submodule to latest main" || echo "No changes to commit for $submodule"
           done
 
-      - name: Load environment variables
-        run: |
-          if [ -f .env ]; then
-            echo "Loading environment variables..."
-            export $(grep -v '^#' .env | xargs)
-            echo "Environment variables loaded"
-          fi
-
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      
       - name: Set secrets on Fly.io
         run: |
           echo "Setting secrets on Fly.io..."
@@ -79,4 +75,5 @@ jobs:
             CHAMBER_API_KEY="$CHAMBER_API_KEY" \
             WEBHOOK_SECRET="$WEBHOOK_SECRET"
             
+      - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
