@@ -1,5 +1,7 @@
 ## Magi CLI: An Esoteric Command Line Tool
 
+## [Magi.CLI - GitHub](https://github.com/bobbyhiddn/Magi.CLI)
+
 ![banner](MAGI_Keys.png)
 
 
