@@ -1,34 +1,45 @@
-app = "magi-chamber"
+# fly.toml app configuration file generated for dev-chamber on 2024-11-27T16:01:36-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'dev-chamber'
+primary_region = 'den'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
+
+[deploy]
+  release_command = 'python -m compileall .'
+  strategy = 'rolling'
+
+[env]
+  FLASK_ENV = 'production'
+  PYTHONPATH = '/app/src'
 
 [http_service]
   internal_port = 8888
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 1
-  processes = ["app"]
+  processes = ['app']
 
-[http_service.concurrency]
-  type = "requests"
-  hard_limit = 250
-  soft_limit = 200
+  [http_service.concurrency]
+    type = 'requests'
+    hard_limit = 250
+    soft_limit = 200
 
-[[http_service.checks]]
-  interval = "30s"
-  timeout = "5s"
-  grace_period = "30s"
-  method = "GET"
-  path = "/health"
-  protocol = "http"
-  tls_skip_verify = false
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '30s'
+    method = 'GET'
+    path = '/health'
+    protocol = 'http'
+    tls_skip_verify = false
 
-[deploy]
-  strategy = "rolling"
-  release_command = "python -m compileall ."
-
-[env]
-  FLASK_ENV = "production"
-  PYTHONPATH = "/app/src"
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
