@@ -2,3 +2,8 @@
 	path = src/grimoire
 	url = https://github.com/bobbyhiddn/Magi.Spells.git
 	branch = main
+
+[submodule "src/chamber/pages"]
+	path = src/chamber/pages
+	url = https://github.com/bobbyhiddn/Magi.Library.git
+	branch = main
