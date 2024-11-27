@@ -6,15 +6,76 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to Dev
+    name: Deploy app
     runs-on: ubuntu-latest
     env:
       FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
       FLY_API_TOKEN: ${{ secrets.DEV_FLY_API_TOKEN }}
       CHAMBER_API_KEY: ${{ secrets.CHAMBER_API_KEY }}
       WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
-    
+    concurrency: deploy-group
     steps:
-      # Your existing deployment steps, but targeting dev-chamber
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+      - name: Update Submodules
+        run: |
+          # Define submodule paths
+          SUBMODULES=("src/grimoire" "src/chamber/pages")
+          
+          # Get root directory
+          ROOT_DIR=$(pwd)
+          
+          # Initialize submodules
+          git submodule init
+          git submodule update
+          
+          # Loop through each submodule
+          for submodule in "${SUBMODULES[@]}"; do
+            echo "Processing submodule: $submodule"
+            
+            if [ ! -d "$submodule" ]; then
+              echo "Creating directory: $submodule"
+              mkdir -p "$submodule"
+            fi
+            
+            # Enter submodule directory
+            cd "$ROOT_DIR/$submodule" || exit 1
+            
+            echo "Current directory: $(pwd)"
+            
+            # Configure git locally for the submodule
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            
+            # Fetch and checkout latest main
+            git fetch origin main
+            git checkout main
+            git pull origin main
+            
+            # Return to root
+            cd "$ROOT_DIR" || exit 1
+            
+            # Update the parent repo's reference
+            git add "$submodule"
+            git commit -m "Update submodule $submodule to latest main" || echo "No changes to commit for $submodule"
+          done
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Set secrets on Fly.io
+        run: |
+            echo "Setting secrets on Fly.io..."
+            flyctl secrets set \
+            FLASK_SECRET_KEY="$FLASK_SECRET_KEY" \
+            CHAMBER_API_KEY="$CHAMBER_API_KEY" \
+            WEBHOOK_SECRET="$WEBHOOK_SECRET" \
+            --app dev-chamber
+            
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only --app dev-chamber
