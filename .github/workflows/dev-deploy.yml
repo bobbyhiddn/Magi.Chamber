@@ -1,8 +1,8 @@
 name: Dev Chamber Deploy
 on:
-  push:
-    branches:
-      - dev    # Triggers on pushes to dev branch
+    push:
+      branches-ignore:
+        - main    # Triggers on pushes to any branch except main
 
 jobs:
   deploy:
