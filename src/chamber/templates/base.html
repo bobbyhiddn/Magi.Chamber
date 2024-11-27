@@ -20,18 +20,30 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-                {% for section, pages in nav_structure.items() %}
+                {% for section, items in nav_structure.items() %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="nav{{ section }}" 
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ section | title }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="nav{{ section }}">
-                        {% for page in pages %}
-                        <a class="dropdown-item" href="{{ url_for('render_markdown_page', page_name=page.path) }}">
-                            {{ page.name | title }}
-                        </a>
-                        {% endfor %}
+                        {% macro render_nav_items(items) %}
+                            {% for item in items %}
+                                {% if item.children %}
+                                    <div class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle" href="#">{{ item.name | title }}</a>
+                                        <div class="dropdown-menu">
+                                            {{ render_nav_items(item.children) }}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <a class="dropdown-item" href="{{ url_for('render_markdown_page', page_name=item.path) }}">
+                                        {{ item.name | title }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        {% endmacro %}
+                        {{ render_nav_items(items) }}
                     </div>
                 </li>
                 {% endfor %}
@@ -53,5 +65,14 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $('.dropdown-submenu a.dropdown-toggle').on("click", function(e){
+            $(this).next('div').toggle();
+            e.stopPropagation();
+            e.preventDefault();
+        });
+    });
+    </script>
 </body>
 </html>
