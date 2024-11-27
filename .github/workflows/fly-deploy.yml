@@ -27,31 +27,39 @@ jobs:
           
       - name: Update Submodules
         run: |
-          # Remove existing submodule directory if it exists
-          rm -rf src/grimoire
+          # Define submodule paths
+          SUBMODULES=("src/grimoire" "src/chamber/pages")
           
-          # Reinitialize submodules from scratch
+          # Initialize submodules
           git submodule init
           git submodule update
           
-          # Enter grimoire directory and ensure we're up to date
-          cd src/grimoire
-          
-          # Configure git locally for the submodule
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          
-          # Fetch and checkout latest main
-          git fetch origin main
-          git checkout main
-          git pull origin main
-          
-          # Return to root
-          cd ../..
-          
-          # Update the parent repo's reference
-          git add src/grimoire
-          git commit -m "Update submodule to latest main" || echo "No changes to commit"
+          # Loop through each submodule
+          for submodule in "${SUBMODULES[@]}"; do
+            echo "Processing submodule: $submodule"
+            
+            # Remove existing submodule directory if it exists
+            rm -rf "$submodule"
+            
+            # Enter submodule directory
+            cd "$submodule"
+            
+            # Configure git locally for the submodule
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            
+            # Fetch and checkout latest main
+            git fetch origin main
+            git checkout main
+            git pull origin main
+            
+            # Return to root
+            cd $(git rev-parse --show-toplevel)
+            
+            # Update the parent repo's reference
+            git add "$submodule"
+            git commit -m "Update submodule $submodule to latest main" || echo "No changes to commit for $submodule"
+          done
 
       - name: Load environment variables
         run: |
