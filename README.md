@@ -1,17 +1,28 @@
 # Magi.Chamber
 
-A mystical repository for MAGI CLI spells, serving as the astral plane where spells reside until pondered by magi.
+A Flask-based repository service for MAGI CLI spells, providing both an API for spell distribution and documentation hosting. The chamber serves as both a spell repository and documentation hub, accessible at:
 
-It serves as both a spell repository and a devlog for the MAGI CLI project at this site:
+- [magi-chamber.fly.dev](https://magi-chamber.fly.dev)
 
-- [Magi.Chamber.fly.dev](https://magi-chamber.fly.dev)
+## Architecture
+
+The system consists of three main components:
+
+1. **Chamber** - The Flask web application that serves spells and documentation
+2. **Grimoire** - Git submodule containing the spell collection ([Magi.Spells](https://github.com/bobbyhiddn/Magi.Spells))
+3. **Library** - Git submodule containing documentation ([Magi.Library](https://github.com/bobbyhiddn/Magi.Library))
 
 ## Setup
 
-1. Create your .env file:
+1. Create environment variables:
 ```bash
-# Generate a secure key
-python flask_keygen.py > .env
+# Generate a Flask secret key
+python utils/flask_keygen.py > .env
+
+# Add required environment variables
+FLASK_SECRET_KEY="<generated-key>"
+CHAMBER_API_KEY="<github-pat>"
+WEBHOOK_SECRET="<webhook-secret>"
 ```
 
 2. Local development:
