@@ -67,6 +67,8 @@ jobs:
             git commit -m "Update submodule $submodule to latest main" || echo "No changes to commit for $submodule"
           done
 
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
       - name: Set secrets on Fly.io
         run: |
           echo "Setting secrets on Fly.io..."
