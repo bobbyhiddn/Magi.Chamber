@@ -93,9 +93,57 @@
 .hero-section {
     background: linear-gradient(rgba(43, 16, 85, 0.8), rgba(43, 16, 85, 0.9)), url('/static/img/magic-bg.jpg');
     background-size: cover;
+    background-position: center;
     color: white;
-    padding: 100px 0;
+    padding: 60px 0;
     margin-top: -1.5rem;
+}
+
+/* Responsive adjustments for hero section */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 0;
+    }
+    
+    .hero-section .display-3 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-section .lead {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-section .btn {
+        margin: 5px;
+        padding: 8px 16px;
+        font-size: 1rem;
+    }
+}
+
+/* Stack buttons vertically on very small screens */
+@media (max-width: 380px) {
+    .hero-section .my-5 {
+        margin: 1rem 0 !important;
+    }
+    
+    .hero-section .btn {
+        display: block;
+        width: 80%;
+        margin: 10px auto;
+    }
+}
+
+/* Responsive adjustments for cards */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 20px;
+    }
+    
+    .spell-card {
+        margin-bottom: 15px;
+    }
 }
 
 .card {
@@ -109,15 +157,20 @@
 .spell-card {
     transition: all 0.3s;
     cursor: pointer;
+    border-color: var(--magic-purple-light);
 }
 
 .spell-card:hover {
     background-color: var(--code-bg);
     transform: translateY(-3px);
+    border-color: var(--magic-purple);
 }
 
 .quick-start-section pre {
     margin-bottom: 0.5rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 /* Magic theme buttons */
@@ -134,13 +187,14 @@
 }
 
 .btn-outline-magic {
-    color: var(--magic-purple);
-    border-color: var(--magic-purple);
+    color: white;
+    border-color: white;
 }
 
 .btn-outline-magic:hover {
-    background-color: var(--magic-purple);
-    color: white;
+    background-color: white;
+    color: var(--magic-purple);
+    border-color: white;
 }
 
 .text-magic {
@@ -163,17 +217,48 @@
 }
 
 [data-theme="dark"] .btn-outline-magic {
-    color: #9d6dff;
-    border-color: #9d6dff;
+    color: #e0e0e0;
+    border-color: #e0e0e0;
 }
 
 [data-theme="dark"] .btn-outline-magic:hover {
-    background-color: #9d6dff;
-    color: var(--bg-primary);
+    background-color: #e0e0e0;
+    color: var(--magic-purple);
 }
 
 [data-theme="dark"] .hero-section {
     background: linear-gradient(rgba(43, 16, 85, 0.9), rgba(43, 16, 85, 0.95)), url('/static/img/magic-bg.jpg');
+}
+
+[data-theme="dark"] .spell-card {
+    border-color: var(--magic-purple-light);
+}
+
+[data-theme="dark"] .spell-card:hover {
+    border-color: #9d6dff;
+}
+
+/* Quick start section responsiveness */
+@media (max-width: 768px) {
+    .quick-start-section {
+        padding: 30px 15px;
+    }
+    
+    .quick-start-section .code-block {
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Featured spells responsiveness */
+@media (max-width: 768px) {
+    .featured-spells .spell-card {
+        margin-bottom: 15px;
+    }
+    
+    .featured-spells h4 {
+        font-size: 1.2rem;
+    }
 }
 </style>
 {% endblock %}
