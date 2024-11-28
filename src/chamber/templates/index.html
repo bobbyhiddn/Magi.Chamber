@@ -4,10 +4,10 @@
     <h1 class="display-3">Welcome to the Magi Chamber</h1>
     <p class="lead">A mystical nexus where command-line spells take form</p>
     <div class="my-5">
-        <a class="btn btn-primary btn-lg mx-2" href="/page/home" role="button">
+        <a class="btn btn-magic btn-lg mx-2" href="/page/home" role="button">
             <i class="fas fa-book-open mr-2"></i>Enter the Chamber
         </a>
-        <a class="btn btn-outline-primary btn-lg mx-2" href="#quick-start" role="button">
+        <a class="btn btn-outline-magic btn-lg mx-2" href="#quick-start" role="button">
             <i class="fas fa-hat-wizard mr-2"></i>Begin Your Journey
         </a>
     </div>
@@ -17,7 +17,7 @@
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
-                <h3 class="card-title"><i class="fas fa-scroll text-primary"></i> Spell Repository</h3>
+                <h3 class="card-title"><i class="fas fa-scroll text-magic"></i> Spell Repository</h3>
                 <p class="card-text">Access a growing collection of powerful command-line spells. Each spell is carefully crafted and maintained.</p>
             </div>
         </div>
@@ -25,7 +25,7 @@
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
-                <h3 class="card-title"><i class="fas fa-sync text-primary"></i> Dynamic Updates</h3>
+                <h3 class="card-title"><i class="fas fa-sync text-magic"></i> Dynamic Updates</h3>
                 <p class="card-text">Spells are automatically synchronized through our mystical API. Stay current with the latest enchantments.</p>
             </div>
         </div>
@@ -33,7 +33,7 @@
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body">
-                <h3 class="card-title"><i class="fas fa-users text-primary"></i> Community Driven</h3>
+                <h3 class="card-title"><i class="fas fa-users text-magic"></i> Community Driven</h3>
                 <p class="card-text">Join our growing community of magical practitioners. Contribute your own spells and enchantments.</p>
             </div>
         </div>
@@ -80,29 +80,96 @@
 </div>
 
 <style>
+:root {
+    --magic-purple: #2b1055;
+    --magic-purple-light: #3d1a70;
+    --magic-purple-hover: #4b1b87;
+}
+
 .hero-section {
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/img/magic-bg.jpg');
+    background: linear-gradient(rgba(43, 16, 85, 0.8), rgba(43, 16, 85, 0.9)), url('/static/img/magic-bg.jpg');
     background-size: cover;
     color: white;
     padding: 100px 0;
     margin-top: -1.5rem;
 }
+
 .card {
     transition: transform 0.2s;
 }
+
 .card:hover {
     transform: translateY(-5px);
 }
+
 .spell-card {
     transition: all 0.3s;
     cursor: pointer;
 }
+
 .spell-card:hover {
     background-color: var(--code-bg);
     transform: translateY(-3px);
 }
+
 .quick-start-section pre {
     margin-bottom: 0.5rem;
+}
+
+/* Magic theme buttons */
+.btn-magic {
+    background-color: var(--magic-purple);
+    border-color: var(--magic-purple);
+    color: white;
+}
+
+.btn-magic:hover {
+    background-color: var(--magic-purple-hover);
+    border-color: var(--magic-purple-hover);
+    color: white;
+}
+
+.btn-outline-magic {
+    color: var(--magic-purple);
+    border-color: var(--magic-purple);
+}
+
+.btn-outline-magic:hover {
+    background-color: var(--magic-purple);
+    color: white;
+}
+
+.text-magic {
+    color: var(--magic-purple) !important;
+}
+
+/* Dark mode overrides */
+[data-theme="dark"] .text-magic {
+    color: #9d6dff !important;
+}
+
+[data-theme="dark"] .btn-magic {
+    background-color: #9d6dff;
+    border-color: #9d6dff;
+}
+
+[data-theme="dark"] .btn-magic:hover {
+    background-color: #b794ff;
+    border-color: #b794ff;
+}
+
+[data-theme="dark"] .btn-outline-magic {
+    color: #9d6dff;
+    border-color: #9d6dff;
+}
+
+[data-theme="dark"] .btn-outline-magic:hover {
+    background-color: #9d6dff;
+    color: var(--bg-primary);
+}
+
+[data-theme="dark"] .hero-section {
+    background: linear-gradient(rgba(43, 16, 85, 0.9), rgba(43, 16, 85, 0.95)), url('/static/img/magic-bg.jpg');
 }
 </style>
 {% endblock %}
