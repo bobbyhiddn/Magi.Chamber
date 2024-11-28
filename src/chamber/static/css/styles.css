@@ -93,10 +93,13 @@ thead th {
 .dropdown-menu {
     background-color: #343a40;
     border: 1px solid rgba(255,255,255,.1);
+    z-index: 1000;
 }
 
 .dropdown-item {
     color: rgba(255,255,255,.5);
+    position: relative;
+    padding-right: 32px !important;  /* Add space for arrow */
 }
 
 .dropdown-item:hover {
@@ -114,4 +117,38 @@ thead th {
 
 .dropdown-toggle::after {
     vertical-align: middle;
+}
+
+/* Nested Dropdown Styles */
+.dropdown-submenu {
+    position: relative !important;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    top: -1px !important;  /* Align with parent */
+    left: 100% !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    border-radius: 0 0.25rem 0.25rem 0.25rem;
+    position: absolute !important;
+    display: none;
+}
+
+.dropdown-submenu .dropdown-menu {
+    z-index: 1001;
+}
+
+.dropdown-submenu > .dropdown-item:after {
+    position: absolute;
+    right: 16px;  /* Adjusted from 10px to move arrow left */
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid transparent;
+    border-right: 0;
+    border-bottom: 0.3em solid transparent;
+    border-left: 0.3em solid;
 }

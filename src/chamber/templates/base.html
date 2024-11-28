@@ -7,6 +7,34 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Include custom CSS after Bootstrap -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-submenu > .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -6px;
+            margin-left: -1px;
+            border-radius: 0 6px 6px 6px;
+        }
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
+        }
+        .dropdown-submenu > a:after {
+            display: block;
+            content: " ";
+            float: right;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            border-width: 5px 0 5px 5px;
+            border-left-color: #cccccc;
+            margin-top: 5px;
+            margin-right: -10px;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -20,18 +48,30 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-                {% for section, pages in nav_structure.items() %}
+                {% for section, items in nav_structure.items() %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="nav{{ section }}" 
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ section | title }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="nav{{ section }}">
-                        {% for page in pages %}
-                        <a class="dropdown-item" href="{{ url_for('render_markdown_page', page_name=page.path) }}">
-                            {{ page.name | title }}
-                        </a>
-                        {% endfor %}
+                        {% macro render_nav_items(items) %}
+                            {% for item in items %}
+                                {% if item.children %}
+                                    <div class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle" href="#">{{ item.name | title }}</a>
+                                        <div class="dropdown-menu">
+                                            {{ render_nav_items(item.children) }}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <a class="dropdown-item" href="{{ url_for('render_markdown_page', page_name=item.path) }}">
+                                        {{ item.name | title }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        {% endmacro %}
+                        {{ render_nav_items(items) }}
                     </div>
                 </li>
                 {% endfor %}
@@ -53,5 +93,41 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        // Handle all levels of dropdowns
+        $(document).on('click', '.dropdown-submenu > a', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Close all sibling submenus
+            $(this).closest('.dropdown-submenu')
+                   .siblings()
+                   .find('.dropdown-menu')
+                   .removeClass('show');
+            
+            // Toggle current submenu
+            $(this).next('.dropdown-menu')
+                   .toggleClass('show');
+        });
+
+        // Close all submenus when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.dropdown-menu').length) {
+                $('.dropdown-submenu .dropdown-menu').removeClass('show');
+            }
+        });
+
+        // Prevent dropdown menu from closing when clicking inside
+        $('.dropdown-menu').on('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Close submenus when main dropdown closes
+        $('.dropdown').on('hide.bs.dropdown', function() {
+            $('.dropdown-submenu .dropdown-menu').removeClass('show');
+        });
+    });
+    </script>
 </body>
 </html>
