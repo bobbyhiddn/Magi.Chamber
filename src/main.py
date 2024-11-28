@@ -16,6 +16,45 @@ class NavItem:
     path: str
     children: List['NavItem'] = field(default_factory=list)
 
+def get_markdown_structure(markdown_dir: str) -> Dict[str, List[NavItem]]:
+    """Get all markdown files organized by directory"""
+    structure = {}
+    
+    if not os.path.exists(markdown_dir):
+        print(f"Warning: Markdown directory not found at {markdown_dir}")
+        return {}
+
+    # Walk through the directory tree
+    for root, dirs, files in os.walk(markdown_dir):
+        rel_path = os.path.relpath(root, markdown_dir)
+        if rel_path == '.':
+            continue
+
+        # Skip hidden directories
+        if any(part.startswith('.') for part in rel_path.split(os.sep)):
+            continue
+
+        # Get the top-level section
+        section = rel_path.split(os.sep)[0]
+        
+        if section not in structure:
+            structure[section] = []
+
+        # Add markdown files as navigation items
+        for file in files:
+            if file.endswith('.md') and not file.startswith('.'):
+                name = os.path.splitext(file)[0]
+                if name.lower() in ('readme', 'index'):
+                    continue
+                
+                path = os.path.join('/page', rel_path, name).replace('\\', '/')
+                structure[section].append(NavItem(
+                    name=name.replace('_', ' ').title(),
+                    path=path
+                ))
+
+    return structure
+
 def create_app():
     """Initialize and configure the Magi.Chamber server"""
     chamber = MagiChamber()
@@ -25,16 +64,17 @@ def create_app():
     src_dir = os.path.dirname(os.path.abspath(__file__))
     
     # Basic configuration with corrected markdown pages path
+    markdown_dir = os.path.join(src_dir, 'modules', 'pages')
+    
     chamber.app.config.update(
         MAX_CONTENT_LENGTH=16 * 1024 * 1024,  # 16MB max-size
         JSON_SORT_KEYS=False,
         SECRET_KEY=os.getenv('FLASK_SECRET_KEY'),
-        # Update path to use proper submodule location
-        MARKDOWN_PAGES_DIR=os.path.join(src_dir, 'modules', 'pages')
+        MARKDOWN_PAGES_DIR=markdown_dir
     )
 
     # Debug print to verify the path
-    print(f"Markdown Pages Directory: {chamber.app.config['MARKDOWN_PAGES_DIR']}")
+    print(f"Markdown Pages Directory: {markdown_dir}")
 
     # Add route for serving markdown pages
     @chamber.app.route('/page/<path:page_name>')
@@ -90,54 +130,21 @@ def create_app():
                 'markdown_page.html',
                 content=html_content,
                 title=title,
-                nav_structure=get_markdown_structure()
+                nav_structure=get_markdown_structure(markdown_dir)
             )
         except Exception as e:
             print(f"Error rendering markdown page: {e}")
             abort(500)
 
+    @chamber.app.context_processor
+    def inject_nav_structure():
+        """Make nav_structure available to all templates"""
+        return {
+            'nav_structure': get_markdown_structure(markdown_dir),
+            'title': 'Magi Chamber'
+        }
+
     return chamber.app
-
-def get_markdown_structure() -> Dict[str, List[NavItem]]:
-    """Get all markdown files organized by directory"""
-    app = create_app()
-    markdown_dir = app.config['MARKDOWN_PAGES_DIR']
-    structure = {}
-    
-    if not os.path.exists(markdown_dir):
-        print(f"Warning: Markdown directory not found at {markdown_dir}")
-        return {}
-
-    # Walk through the directory tree
-    for root, dirs, files in os.walk(markdown_dir):
-        rel_path = os.path.relpath(root, markdown_dir)
-        if rel_path == '.':
-            continue
-
-        # Skip hidden directories
-        if any(part.startswith('.') for part in rel_path.split(os.sep)):
-            continue
-
-        # Get the top-level section
-        section = rel_path.split(os.sep)[0]
-        
-        if section not in structure:
-            structure[section] = []
-
-        # Add markdown files as navigation items
-        for file in files:
-            if file.endswith('.md') and not file.startswith('.'):
-                name = os.path.splitext(file)[0]
-                if name.lower() in ('readme', 'index'):
-                    continue
-                
-                path = os.path.join('/page', rel_path, name).replace('\\', '/')
-                structure[section].append(NavItem(
-                    name=name.replace('_', ' ').title(),
-                    path=path
-                ))
-
-    return structure
 
 app = create_app()
 
