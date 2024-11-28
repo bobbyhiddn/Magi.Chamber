@@ -1,10 +1,108 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="text-center">
-    <h1 class="display-4">Welcome to Magi Chamber</h1>
-    <p class="lead">Explore the spells and knowledge stored here.</p>
-    <hr class="my-4">
-    <p>Navigate through the mystical content below.</p>
-    <a class="btn btn-primary btn-lg" href="/page/home" role="button">Enter the Chamber</a>
+<div class="hero-section text-center py-5">
+    <h1 class="display-3">Welcome to the Magi Chamber</h1>
+    <p class="lead">A mystical nexus where command-line spells take form</p>
+    <div class="my-5">
+        <a class="btn btn-primary btn-lg mx-2" href="/page/home" role="button">
+            <i class="fas fa-book-open mr-2"></i>Enter the Chamber
+        </a>
+        <a class="btn btn-outline-primary btn-lg mx-2" href="#quick-start" role="button">
+            <i class="fas fa-hat-wizard mr-2"></i>Begin Your Journey
+        </a>
+    </div>
 </div>
+
+<div class="row mb-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title"><i class="fas fa-scroll text-primary"></i> Spell Repository</h3>
+                <p class="card-text">Access a growing collection of powerful command-line spells. Each spell is carefully crafted and maintained.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title"><i class="fas fa-sync text-primary"></i> Dynamic Updates</h3>
+                <p class="card-text">Spells are automatically synchronized through our mystical API. Stay current with the latest enchantments.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title"><i class="fas fa-users text-primary"></i> Community Driven</h3>
+                <p class="card-text">Join our growing community of magical practitioners. Contribute your own spells and enchantments.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="quick-start" class="quick-start-section py-5">
+    <h2 class="text-center mb-4">Quick Start Guide</h2>
+    <div class="code-block bg-light p-4 rounded">
+        <pre class="mb-2"><code>pip install magi_cli_pypi</code></pre>
+        <pre class="mb-2"><code>git clone https://github.com/bobbyhiddn/Magi.CLI ~/.sanctum</code></pre>
+        <pre class="mb-0"><code>cast initialize</code></pre>
+    </div>
+</div>
+
+<div class="featured-spells py-5">
+    <h2 class="text-center mb-4">Featured Spells</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="spell-card p-3 border rounded">
+                <h4>🔮 aether_inquiry</h4>
+                <p class="small">Call upon AI to answer questions and generate spells</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="spell-card p-3 border rounded">
+                <h4>📜 pagecraft</h4>
+                <p class="small">Transform web pages into markdown through AI magic</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="spell-card p-3 border rounded">
+                <h4>✨ runecraft</h4>
+                <p class="small">Generate GUI elements for your bash scripts</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="spell-card p-3 border rounded">
+                <h4>📚 scribe</h4>
+                <p class="small">Transcribe files into markdown format</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/static/img/magic-bg.jpg');
+    background-size: cover;
+    color: white;
+    padding: 100px 0;
+    margin-top: -1.5rem;
+}
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.spell-card {
+    transition: all 0.3s;
+    cursor: pointer;
+}
+.spell-card:hover {
+    background-color: var(--code-bg);
+    transform: translateY(-3px);
+}
+.quick-start-section pre {
+    margin-bottom: 0.5rem;
+}
+</style>
 {% endblock %}
