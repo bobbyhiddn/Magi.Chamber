@@ -10,6 +10,46 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .dropdown-submenu {
+            position: relative;
+        }
+        
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
+            display: none;
+        }
+
+        .dropdown-submenu > .dropdown-item:after {
+            display: block;
+            content: " ";
+            float: right;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            border-width: 5px 0 5px 5px;
+            border-left-color: #cccccc;
+            margin-top: 5px;
+            margin-right: -10px;
+        }
+
+        /* Show dropdown on hover for all levels */
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
+        }
+
+        /* Active/expanded state */
+        .dropdown-submenu.show > .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-submenu.show > .dropdown-item:after {
+            transform: rotate(90deg);
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -80,18 +120,35 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Handle nested dropdowns
-            $('.dropdown-submenu > a').on("click", function(e) {
-                var submenu = $(this).next('.dropdown-menu');
-                $('.dropdown-submenu .dropdown-menu').not(submenu).hide();
-                submenu.toggle();
-                e.stopPropagation();
+            // Handle multilevel dropdowns
+            $('.dropdown-submenu .dropdown-toggle').on('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle clicked submenu
+                const $submenu = $(this).next('.dropdown-menu');
+                const $parent = $(this).parent();
+                
+                // Close other submenus at the same level
+                $parent.siblings().find('.dropdown-menu').removeClass('show');
+                $parent.siblings().removeClass('show');
+                
+                // Toggle current submenu
+                $submenu.toggleClass('show');
+                $parent.toggleClass('show');
             });
 
-            // Hide submenus when clicking outside
-            $('body').on('click', function() {
-                $('.dropdown-submenu .dropdown-menu').hide();
+            // Close dropdowns when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.dropdown-submenu').length) {
+                    $('.dropdown-submenu .dropdown-menu').removeClass('show');
+                    $('.dropdown-submenu').removeClass('show');
+                }
+            });
+
+            // Prevent main dropdown from closing when clicking submenu
+            $('.dropdown-menu').on('click', function(e) {
+                e.stopPropagation();
             });
 
             // Theme toggle logic
@@ -114,24 +171,5 @@
             });
         });
     </script>
-
-    <style>
-        .dropdown-submenu {
-            position: relative;
-        }
-        
-        .dropdown-submenu .dropdown-menu {
-            top: 0;
-            left: 100%;
-            margin-top: -1px;
-        }
-
-        .dropdown-submenu .dropdown-toggle:after {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-    </style>
 </body>
 </html>
