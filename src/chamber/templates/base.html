@@ -2,11 +2,14 @@
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Include custom CSS after Bootstrap -->
+    <!-- Include custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         .dropdown-submenu {
             position: relative;
@@ -34,24 +37,7 @@
             margin-top: 5px;
             margin-right: -10px;
         }
-        /* Add these styles */
-        [data-theme="dark"] {
-            background-color: #333;
-            color: #fff;
-        }
-
-        [data-theme="light"] {
-            background-color: #fff;
-            color: #333;
-        }
-
-        .theme-toggle {
-            padding: 0.375rem 0.75rem;
-            border-radius: 0.25rem;
-        }
     </style>
-    <!-- Add Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -82,75 +68,55 @@
             </ul>
         </div>
     </nav>
+    
     <!-- Main Content Container -->
     <div class="container mt-4">
         {% block content %}
         {% endblock %}
     </div>
+    
     <!-- Footer -->
     <footer class="footer mt-auto py-3 bg-light">
-      <div class="container">
-        <span class="text-muted">© 2024 Magi Chamber</span>
-      </div>
+        <div class="container">
+            <span class="text-muted">© 2024 Magi Chamber</span>
+        </div>
     </footer>
+    
     <!-- Include Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-    $(document).ready(function(){
-        // Handle all levels of dropdowns
-        $(document).on('click', '.dropdown-submenu > a', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Close all sibling submenus
-            $(this).closest('.dropdown-submenu')
-                   .siblings()
-                   .find('.dropdown-menu')
-                   .removeClass('show');
-            
-            // Toggle current submenu
-            $(this).next('.dropdown-menu')
-                   .toggleClass('show');
-        });
+        document.addEventListener("DOMContentLoaded", function() {
+            // Handle all levels of dropdowns
+            document.querySelectorAll('.dropdown-submenu > a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const submenu = this.nextElementSibling;
+                    if (submenu) submenu.classList.toggle('show');
+                });
+            });
 
-        // Close all submenus when clicking outside
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('.dropdown-menu').length) {
-                $('.dropdown-submenu .dropdown-menu').removeClass('show');
+            // Theme toggle logic
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
             }
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
         });
-
-        // Prevent dropdown menu from closing when clicking inside
-        $('.dropdown-menu').on('click', function(e) {
-            e.stopPropagation();
-        });
-
-        // Close submenus when main dropdown closes
-        $('.dropdown').on('hide.bs.dropdown', function() {
-            $('.dropdown-submenu .dropdown-menu').removeClass('show');
-        });
-
-        // Theme switching logic
-        const themeToggle = document.getElementById('themeToggle');
-        const icon = themeToggle.querySelector('i');
-        
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-        
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        setTheme(savedTheme);
-        
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        });
-    });
     </script>
 </body>
 </html>
