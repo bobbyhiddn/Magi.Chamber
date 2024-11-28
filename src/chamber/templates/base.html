@@ -67,23 +67,34 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
     $(document).ready(function(){
-        // Close all submenus when main dropdown closes
-        $('.dropdown').on('hide.bs.dropdown', function () {
+        // Hide all submenus initially
+        $('.dropdown-submenu .dropdown-menu').hide();
+        
+        // Handle submenu clicks
+        $('.dropdown-submenu > .dropdown-item').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Hide all other submenus
+            $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
+            
+            // Toggle clicked submenu
+            $(this).next('.dropdown-menu').toggle();
+        });
+        
+        // Close submenus when clicking outside
+        $(document).click(function(){
             $('.dropdown-submenu .dropdown-menu').hide();
         });
-
-        // Handle submenu toggles
-        $('.dropdown-submenu > a').on('click', function(e) {
-            var $subMenu = $(this).next('.dropdown-menu');
-            $('.dropdown-submenu .dropdown-menu').not($subMenu).hide();
-            $subMenu.toggle();
+        
+        // Prevent menu close when clicking inside dropdown
+        $('.dropdown-menu').click(function(e){
             e.stopPropagation();
-            e.preventDefault();
         });
-
-        // Prevent main dropdown from closing when clicking submenu
-        $('.dropdown-menu').on('click', function(e) {
-            e.stopPropagation();
+        
+        // Hide submenus when main dropdown closes
+        $('.dropdown').on('hide.bs.dropdown', function(){
+            $('.dropdown-submenu .dropdown-menu').hide();
         });
     });
     </script>
