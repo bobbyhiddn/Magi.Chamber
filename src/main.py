@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import markdown
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 # Load environment variables
 load_dotenv()
@@ -16,6 +16,43 @@ class NavItem:
     path: str
     children: List['NavItem'] = field(default_factory=list)
 
+def create_nav_tree(root_dir: str, current_dir: str) -> List[NavItem]:
+    """Recursively create navigation tree for a directory"""
+    items = []
+    
+    try:
+        for entry in os.scandir(current_dir):
+            # Skip hidden files and directories
+            if entry.name.startswith('.'):
+                continue
+                
+            # Get path relative to root markdown directory for URLs
+            rel_path = os.path.relpath(entry.path, root_dir)
+            
+            if entry.is_dir():
+                # Process directory
+                children = create_nav_tree(root_dir, entry.path)
+                if children:  # Only add directories that have markdown files
+                    items.append(NavItem(
+                        name=entry.name.replace('_', ' ').title(),
+                        path=rel_path,
+                        children=children
+                    ))
+            elif entry.is_file() and entry.name.endswith('.md'):
+                # Process markdown file
+                name = os.path.splitext(entry.name)[0]
+                if name.lower() not in ('readme', 'index'):
+                    items.append(NavItem(
+                        name=name.replace('_', ' ').title(),
+                        path=f"/page/{rel_path[:-3]}",  # Remove .md extension
+                        children=[]
+                    ))
+                    
+    except Exception as e:
+        print(f"Error creating nav tree for {current_dir}: {e}")
+        
+    return sorted(items, key=lambda x: x.name)
+
 def get_markdown_structure(markdown_dir: str) -> Dict[str, List[NavItem]]:
     """Get all markdown files organized by directory"""
     structure = {}
@@ -24,34 +61,16 @@ def get_markdown_structure(markdown_dir: str) -> Dict[str, List[NavItem]]:
         print(f"Warning: Markdown directory not found at {markdown_dir}")
         return {}
 
-    # Walk through the directory tree
-    for root, dirs, files in os.walk(markdown_dir):
-        rel_path = os.path.relpath(root, markdown_dir)
-        if rel_path == '.':
-            continue
-
-        # Skip hidden directories
-        if any(part.startswith('.') for part in rel_path.split(os.sep)):
-            continue
-
-        # Get the top-level section
-        section = rel_path.split(os.sep)[0]
-        
-        if section not in structure:
-            structure[section] = []
-
-        # Add markdown files as navigation items
-        for file in files:
-            if file.endswith('.md') and not file.startswith('.'):
-                name = os.path.splitext(file)[0]
-                if name.lower() in ('readme', 'index'):
-                    continue
-                
-                path = os.path.join('/page', rel_path, name).replace('\\', '/')
-                structure[section].append(NavItem(
-                    name=name.replace('_', ' ').title(),
-                    path=path
-                ))
+    # Get top-level directories
+    try:
+        for entry in os.scandir(markdown_dir):
+            if entry.is_dir() and not entry.name.startswith('.'):
+                nav_items = create_nav_tree(markdown_dir, entry.path)
+                if nav_items:
+                    structure[entry.name] = nav_items
+                    
+    except Exception as e:
+        print(f"Error getting markdown structure: {e}")
 
     return structure
 

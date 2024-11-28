@@ -10,34 +10,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        .dropdown-submenu {
-            position: relative;
-        }
-        .dropdown-submenu > .dropdown-menu {
-            top: 0;
-            left: 100%;
-            margin-top: -6px;
-            margin-left: -1px;
-            border-radius: 0 6px 6px 6px;
-        }
-        .dropdown-submenu:hover > .dropdown-menu {
-            display: block;
-        }
-        .dropdown-submenu > a:after {
-            display: block;
-            content: " ";
-            float: right;
-            width: 0;
-            height: 0;
-            border-color: transparent;
-            border-style: solid;
-            border-width: 5px 0 5px 5px;
-            border-left-color: #cccccc;
-            margin-top: 5px;
-            margin-right: -10px;
-        }
-    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -54,13 +26,26 @@
                 </li>
                 {% for section, items in nav_structure.items() %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ section }}
+                    <a class="nav-link dropdown-toggle" href="#" id="nav-{{ section }}" role="button" 
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ section | replace('_', ' ') | title }}
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        {% for item in items %}
-                        <a class="dropdown-item" href="{{ item.path }}">{{ item.name }}</a>
-                        {% endfor %}
+                    <div class="dropdown-menu" aria-labelledby="nav-{{ section }}">
+                        {% macro render_nav_items(items) %}
+                            {% for item in items %}
+                                {% if item.children %}
+                                    <div class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle" href="#">{{ item.name }}</a>
+                                        <div class="dropdown-menu">
+                                            {{ render_nav_items(item.children) }}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <a class="dropdown-item" href="{{ item.path }}">{{ item.name }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        {% endmacro %}
+                        {{ render_nav_items(items) }}
                     </div>
                 </li>
                 {% endfor %}
@@ -74,7 +59,7 @@
                 </li>
             </ul>
         </div>
-    </nav>    
+    </nav>
     
     <!-- Main Content Container -->
     <div class="container mt-4">
@@ -95,14 +80,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Handle all levels of dropdowns
-            document.querySelectorAll('.dropdown-submenu > a').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const submenu = this.nextElementSibling;
-                    if (submenu) submenu.classList.toggle('show');
-                });
+            // Handle nested dropdowns
+            $('.dropdown-submenu > a').on("click", function(e) {
+                var submenu = $(this).next('.dropdown-menu');
+                $('.dropdown-submenu .dropdown-menu').not(submenu).hide();
+                submenu.toggle();
+                e.stopPropagation();
+                e.preventDefault();
+            });
+
+            // Hide submenus when clicking outside
+            $('body').on('click', function() {
+                $('.dropdown-submenu .dropdown-menu').hide();
             });
 
             // Theme toggle logic
@@ -125,5 +114,24 @@
             });
         });
     </script>
+
+    <style>
+        .dropdown-submenu {
+            position: relative;
+        }
+        
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
+        }
+
+        .dropdown-submenu .dropdown-toggle:after {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
 </body>
 </html>
