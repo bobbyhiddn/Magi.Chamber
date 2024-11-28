@@ -70,29 +70,35 @@
         // Hide all submenus initially
         $('.dropdown-submenu .dropdown-menu').hide();
         
-        // Handle submenu clicks
-        $('.dropdown-submenu > .dropdown-item').click(function(e){
+        // Handle clicks on any level of submenu
+        $(document).on('click', '.dropdown-submenu > .dropdown-item', function(e){
             e.preventDefault();
             e.stopPropagation();
             
-            // Hide all other submenus
-            $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
+            // Find all sibling menus at the same level
+            var siblingMenus = $(this).parent().siblings().find('> .dropdown-menu');
+            // Find cousin menus (other branches)
+            var cousinMenus = $('.dropdown-menu').not($(this).parents('.dropdown-menu')).not($(this).next('.dropdown-menu'));
+            
+            // Hide sibling and cousin menus
+            siblingMenus.hide();
+            cousinMenus.hide();
             
             // Toggle clicked submenu
             $(this).next('.dropdown-menu').toggle();
         });
         
-        // Close submenus when clicking outside
+        // Close all submenus when clicking outside
         $(document).click(function(){
             $('.dropdown-submenu .dropdown-menu').hide();
         });
         
-        // Prevent menu close when clicking inside dropdown
+        // Prevent menu close when clicking inside any dropdown
         $('.dropdown-menu').click(function(e){
             e.stopPropagation();
         });
         
-        // Hide submenus when main dropdown closes
+        // Hide all submenus when main dropdown closes
         $('.dropdown').on('hide.bs.dropdown', function(){
             $('.dropdown-submenu .dropdown-menu').hide();
         });
