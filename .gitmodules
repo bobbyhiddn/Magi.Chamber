@@ -1,9 +1,9 @@
-[submodule "src/grimoire"]
-	path = src/grimoire
+[submodule "src/modules/grimoire"]
+	path = src/modules/grimoire
 	url = https://github.com/bobbyhiddn/Magi.Spells.git
 	branch = main
 
-[submodule "src/chamber/pages"]
-	path = src/chamber/pages
+[submodule "src/modules/pages"]
+	path = src/modules/pages
 	url = https://github.com/bobbyhiddn/Magi.Library.git
 	branch = main
