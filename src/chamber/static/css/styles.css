@@ -15,7 +15,7 @@
     --footer-bg: #f8f9fa;
     --footer-text: #6c757d;
   }
-  
+
   /* Dark mode variables */
   [data-theme="dark"] {
     --bg-primary: #1a1a1a;
@@ -164,3 +164,38 @@
   [data-theme="dark"] .highlight .nv { color: var(--syntax-variable); }
   [data-theme="dark"] .highlight .na { color: var(--syntax-function); }
   [data-theme="dark"] .highlight .o { color: var(--syntax-operator); }
+
+  /* Theme toggle button styles */
+  .theme-toggle {
+    margin: 0 15px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .theme-toggle:hover {
+    transform: scale(1.1);
+  }
+
+  [data-theme="dark"] .theme-toggle {
+    background-color: #2d333b;
+    border-color: #444c56;
+    color: #ffffff;
+  }
+
+  [data-theme="light"] .theme-toggle {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    color: #212529;
+  }
+
+  /* Ensure the button is visible in the navbar */
+  .navbar .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .navbar .theme-toggle i {
+    font-size: 1.1rem;
+  }
