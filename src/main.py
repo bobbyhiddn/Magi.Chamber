@@ -121,7 +121,12 @@ def get_markdown_structure() -> Dict[str, List[NavItem]]:
 @app.context_processor
 def inject_nav_structure():
     """Make nav_structure available to all templates"""
-    return {'nav_structure': get_markdown_structure()}
+    structure = get_markdown_structure()
+    print(f"Navigation structure: {structure}")  # Debug line
+    return {
+        'nav_structure': structure,
+        'title': 'Magi Chamber'
+    }
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8888))
