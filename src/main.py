@@ -4,16 +4,17 @@ import os
 from dotenv import load_dotenv
 import markdown  # Import the markdown library
 from pathlib import Path
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Dict
 
 # Load environment variables
 load_dotenv()
 
 @dataclass
-class Page:
+class NavItem:
     name: str
     path: str
+    children: List['NavItem'] = field(default_factory=list)
 
 def create_app():
     """Initialize and configure the Magi.Chamber server"""
@@ -69,28 +70,51 @@ def create_app():
 
 app = create_app()
 
-def get_markdown_structure() -> Dict[str, List[Page]]:
+def get_markdown_structure() -> Dict[str, List[NavItem]]:
     """Get all markdown files organized by directory"""
     markdown_dir = app.config['MARKDOWN_PAGES_DIR']
     structure = {}
+    hierarchy = {}
     
     for path in Path(markdown_dir).rglob('*.md'):
-        # Get relative path from markdown dir
         rel_path = path.relative_to(markdown_dir)
-        # Get section (folder name or 'main' for root files)
-        section = rel_path.parent.name if rel_path.parent.name else 'main'
-        # Get page name without .md extension
-        page_name = path.stem
-        # Get full path for URL without .md extension
-        page_path = str(rel_path.with_suffix('')).replace('\\', '/')
+        parts = rel_path.parts
         
-        if section not in structure:
-            structure[section] = []
+        section = parts[0] if len(parts) > 1 else 'main'
         
-        structure[section].append(Page(
-            name=page_name.replace('_', ' '),
-            path=page_path
-        ))
+        if section not in hierarchy:
+            hierarchy[section] = {}
+            
+        current_dict = hierarchy[section]
+        for part in parts[1:-1]:
+            if part not in current_dict:
+                current_dict[part] = {}
+            current_dict = current_dict[part]
+            
+        filename = path.stem
+        current_dict[filename] = str(rel_path.with_suffix('')).replace('\\', '/')
+    
+    def dict_to_nav_items(d: dict) -> List[NavItem]:
+        items = []
+        for name, path_or_dict in sorted(d.items()):
+            if isinstance(path_or_dict, str):
+                items.append(NavItem(
+                    name=name.replace('_', ' '),
+                    path=path_or_dict,
+                    children=[]
+                ))
+            else:
+                children = dict_to_nav_items(path_or_dict)
+                if children:
+                    items.append(NavItem(
+                        name=name.replace('_', ' '),
+                        path=name,
+                        children=children
+                    ))
+        return items
+    
+    for section, content in hierarchy.items():
+        structure[section] = dict_to_nav_items(content)
     
     return structure
 
