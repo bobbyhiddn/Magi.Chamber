@@ -22,7 +22,7 @@ class MagiChamber:
         
         # Container paths - using absolute paths
         self.base_path = Path(os.path.dirname(os.path.dirname(__file__)))  # src directory
-        self.grimoire = self.base_path / "grimoire" / "spells"
+        self.grimoire = self.base_path / "modules" / "grimoire" / "spells"
         self.archives = self.base_path / "archives"
         
         # Log the paths for debugging
