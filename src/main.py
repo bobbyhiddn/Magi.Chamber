@@ -121,11 +121,8 @@ def get_markdown_structure() -> Dict[str, List[NavItem]]:
 @app.context_processor
 def inject_nav_structure():
     """Make nav_structure available to all templates"""
-    # Add home page if it doesn't exist in structure
     structure = get_markdown_structure()
-    if 'main' not in structure:
-        structure['main'] = [NavItem(name='home', path='home', children=[])]
-        
+    print(f"Navigation structure: {structure}")  # Debug line
     return {
         'nav_structure': structure,
         'title': 'Magi Chamber'
