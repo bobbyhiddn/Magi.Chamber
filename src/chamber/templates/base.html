@@ -7,6 +7,34 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Include custom CSS after Bootstrap -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-submenu > .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -6px;
+            margin-left: -1px;
+            border-radius: 0 6px 6px 6px;
+        }
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
+        }
+        .dropdown-submenu > a:after {
+            display: block;
+            content: " ";
+            float: right;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            border-width: 5px 0 5px 5px;
+            border-left-color: #cccccc;
+            margin-top: 5px;
+            margin-right: -10px;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -67,23 +95,37 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
     $(document).ready(function(){
-        // Close all submenus when main dropdown closes
-        $('.dropdown').on('hide.bs.dropdown', function () {
-            $('.dropdown-submenu .dropdown-menu').hide();
-        });
-
-        // Handle submenu toggles
-        $('.dropdown-submenu > a').on('click', function(e) {
-            var $subMenu = $(this).next('.dropdown-menu');
-            $('.dropdown-submenu .dropdown-menu').not($subMenu).hide();
-            $subMenu.toggle();
-            e.stopPropagation();
+        // Handle all levels of dropdowns
+        $(document).on('click', '.dropdown-submenu > a', function(e) {
             e.preventDefault();
+            e.stopPropagation();
+            
+            // Close all sibling submenus
+            $(this).closest('.dropdown-submenu')
+                   .siblings()
+                   .find('.dropdown-menu')
+                   .removeClass('show');
+            
+            // Toggle current submenu
+            $(this).next('.dropdown-menu')
+                   .toggleClass('show');
         });
 
-        // Prevent main dropdown from closing when clicking submenu
+        // Close all submenus when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.dropdown-menu').length) {
+                $('.dropdown-submenu .dropdown-menu').removeClass('show');
+            }
+        });
+
+        // Prevent dropdown menu from closing when clicking inside
         $('.dropdown-menu').on('click', function(e) {
             e.stopPropagation();
+        });
+
+        // Close submenus when main dropdown closes
+        $('.dropdown').on('hide.bs.dropdown', function() {
+            $('.dropdown-submenu .dropdown-menu').removeClass('show');
         });
     });
     </script>
