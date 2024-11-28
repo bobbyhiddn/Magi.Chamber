@@ -124,10 +124,10 @@ thead th {
 }
 
 .dropdown-submenu > .dropdown-menu {
-    top: -1px !important;
-    left: 100% !important;
+    top: 0 !important;  /* Changed from -1px */
+    left: calc(100% + 1px) !important;  /* Changed from 100% */
     margin-top: 0 !important;
-    margin-left: 0.5px !important;
+    margin-left: -1px !important;  /* Changed from 0.5px */
     border-radius: 0 0.25rem 0.25rem 0.25rem;
     position: absolute !important;
     display: none;
