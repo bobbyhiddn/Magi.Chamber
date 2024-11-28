@@ -67,10 +67,23 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
     $(document).ready(function(){
-        $('.dropdown-submenu a.dropdown-toggle').on("click", function(e){
-            $(this).next('div').toggle();
+        // Close all submenus when main dropdown closes
+        $('.dropdown').on('hide.bs.dropdown', function () {
+            $('.dropdown-submenu .dropdown-menu').hide();
+        });
+
+        // Handle submenu toggles
+        $('.dropdown-submenu > a').on('click', function(e) {
+            var $subMenu = $(this).next('.dropdown-menu');
+            $('.dropdown-submenu .dropdown-menu').not($subMenu).hide();
+            $subMenu.toggle();
             e.stopPropagation();
             e.preventDefault();
+        });
+
+        // Prevent main dropdown from closing when clicking submenu
+        $('.dropdown-menu').on('click', function(e) {
+            e.stopPropagation();
         });
     });
     </script>
