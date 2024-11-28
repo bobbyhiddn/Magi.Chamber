@@ -89,26 +89,21 @@ thead th {
 .highlight .gh { color: #030; } /* Generic.Heading */
 .highlight .gi { background-color: #cfc; border: 1px solid #0c0 } /* Generic.Inserted */
 
-/* Dropdown Menu Base Styles */
+/* Add to your existing styles.css */
 .dropdown-menu {
     background-color: #343a40;
     border: 1px solid rgba(255,255,255,.1);
-    margin: 0;
-    padding: 0.5rem 0;
-    min-width: 200px;
     z-index: 1000;
 }
 
 .dropdown-item {
     color: rgba(255,255,255,.5);
-    padding: 0.5rem 1.5rem;
     position: relative;
 }
 
 .dropdown-item:hover {
     color: rgba(255,255,255,.75);
     background-color: #2c3136;
-    text-decoration: none;
 }
 
 .nav-link {
@@ -129,9 +124,10 @@ thead th {
 }
 
 .dropdown-submenu > .dropdown-menu {
-    top: 0 !important;
-    left: calc(100%) !important;
-    margin: 0 !important;
+    top: 0 !important;  /* Changed from -1px */
+    left: calc(100% + 1px) !important;  /* Changed from 100% */
+    margin-top: 0 !important;
+    margin-left: -1px !important;  /* Changed from 0.5px */
     border-radius: 0 0.25rem 0.25rem 0.25rem;
     position: absolute !important;
     display: none;
@@ -141,26 +137,17 @@ thead th {
     z-index: 1001;
 }
 
-.dropdown-submenu .dropdown-submenu .dropdown-menu {
-    z-index: 1002;
-    left: calc(100%) !important;
-    top: 0 !important;
-}
-
 .dropdown-submenu > .dropdown-item:after {
-    display: inline-block;
     position: absolute;
-    right: 0.5rem;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
     content: "";
     border-top: 0.3em solid transparent;
     border-right: 0;
     border-bottom: 0.3em solid transparent;
     border-left: 0.3em solid;
-    opacity: 0.5;
-}
-
-.dropdown-submenu > .dropdown-item:hover:after {
-    opacity: 0.75;
 }

@@ -67,40 +67,23 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
     $(document).ready(function(){
-        // Hide all submenus initially
-        $('.dropdown-submenu .dropdown-menu').hide();
-        
-        // Handle clicks on any level of submenu
-        $(document).on('click', '.dropdown-submenu > .dropdown-item', function(e){
+        // Close all submenus when main dropdown closes
+        $('.dropdown').on('hide.bs.dropdown', function () {
+            $('.dropdown-submenu .dropdown-menu').hide();
+        });
+
+        // Handle submenu toggles
+        $('.dropdown-submenu > a').on('click', function(e) {
+            var $subMenu = $(this).next('.dropdown-menu');
+            $('.dropdown-submenu .dropdown-menu').not($subMenu).hide();
+            $subMenu.toggle();
+            e.stopPropagation();
             e.preventDefault();
+        });
+
+        // Prevent main dropdown from closing when clicking submenu
+        $('.dropdown-menu').on('click', function(e) {
             e.stopPropagation();
-            
-            // Find all sibling menus at the same level
-            var siblingMenus = $(this).parent().siblings().find('> .dropdown-menu');
-            // Find cousin menus (other branches)
-            var cousinMenus = $('.dropdown-menu').not($(this).parents('.dropdown-menu')).not($(this).next('.dropdown-menu'));
-            
-            // Hide sibling and cousin menus
-            siblingMenus.hide();
-            cousinMenus.hide();
-            
-            // Toggle clicked submenu
-            $(this).next('.dropdown-menu').toggle();
-        });
-        
-        // Close all submenus when clicking outside
-        $(document).click(function(){
-            $('.dropdown-submenu .dropdown-menu').hide();
-        });
-        
-        // Prevent menu close when clicking inside any dropdown
-        $('.dropdown-menu').click(function(e){
-            e.stopPropagation();
-        });
-        
-        // Hide all submenus when main dropdown closes
-        $('.dropdown').on('hide.bs.dropdown', function(){
-            $('.dropdown-submenu .dropdown-menu').hide();
         });
     });
     </script>
