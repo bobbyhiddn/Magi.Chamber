@@ -174,23 +174,27 @@
     transition: all 0.15s ease-in-out;
   }
   
-  #themeToggle:hover {
-    border-color: var(--nav-text-hover);
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  #themeToggle .fas {
+.theme-toggle {
+    min-width: 40px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.theme-toggle .fas {
+    font-size: 1.2rem;
+}
+
+/* Fix button outline color in dark mode */
+[data-theme="dark"] .btn-outline-light {
     color: var(--nav-text);
-  }
-  
-  #themeToggle:hover .fas {
-    color: var(--nav-text-hover);
-  }
-  
-  [data-theme="dark"] #themeToggle {
     border-color: var(--nav-text);
-  }
-  
-  [data-theme="dark"] #themeToggle .fas {
-    color: var(--nav-text);
-  }
+}
+
+[data-theme="dark"] .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--nav-text-hover);
+    border-color: var(--nav-text-hover);
+}
