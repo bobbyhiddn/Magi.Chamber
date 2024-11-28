@@ -27,8 +27,8 @@ def create_app():
         MAX_CONTENT_LENGTH=16 * 1024 * 1024,  # 16MB max-size
         JSON_SORT_KEYS=False,
         SECRET_KEY=os.getenv('FLASK_SECRET_KEY'),
-        # Update this line to point to the correct directory
-        MARKDOWN_PAGES_DIR=os.path.join(os.path.dirname(__file__), 'chamber', 'pages')
+        # Update path to new modules location
+        MARKDOWN_PAGES_DIR=os.path.join(os.path.dirname(__file__), 'modules', 'pages')
     )
 
     # Add route for serving markdown pages
