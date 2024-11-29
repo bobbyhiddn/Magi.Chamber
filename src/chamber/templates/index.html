@@ -53,31 +53,66 @@
     <h2 class="text-center mb-4">Featured Spells</h2>
     <div class="row">
         <div class="col-md-3">
-            <div class="spell-card p-3 border rounded">
-                <h4>🔮 aether_inquiry</h4>
-                <p class="small">Call upon AI to answer questions and generate spells</p>
-            </div>
+            <a href="/page/spells/aether-inquiry" class="text-decoration-none">
+                <div class="spell-card p-3 border rounded">
+                    <h4>🔮 aether_inquiry</h4>
+                    <p class="small">Call upon AI to answer questions and generate spells</p>
+                </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="spell-card p-3 border rounded">
-                <h4>📜 pagecraft</h4>
-                <p class="small">Transform web pages into markdown through AI magic</p>
-            </div>
+            <a href="/page/spells/pagecraft" class="text-decoration-none">
+                <div class="spell-card p-3 border rounded">
+                    <h4>📜 pagecraft</h4>
+                    <p class="small">Transform web pages into markdown through AI magic</p>
+                </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="spell-card p-3 border rounded">
-                <h4>✨ runecraft</h4>
-                <p class="small">Generate GUI elements for your bash scripts</p>
-            </div>
+            <a href="/page/spells/runecraft" class="text-decoration-none">
+                <div class="spell-card p-3 border rounded">
+                    <h4>✨ runecraft</h4>
+                    <p class="small">Generate GUI elements for your bash scripts</p>
+                </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="spell-card p-3 border rounded">
-                <h4>📚 scribe</h4>
-                <p class="small">Transcribe files into markdown format</p>
-            </div>
+            <a href="/page/spells/scribe" class="text-decoration-none">
+                <div class="spell-card p-3 border rounded">
+                    <h4>📚 scribe</h4>
+                    <p class="small">Transcribe files into markdown format</p>
+                </div>
+            </a>
         </div>
     </div>
 </div>
+
+<style>
+.spell-card {
+    transition: all 0.3s;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.spell-card:hover {
+    background-color: var(--code-bg);
+    transform: translateY(-3px);
+    border-color: var(--magic-purple);
+}
+
+[data-theme="dark"] .spell-card:hover {
+    border-color: #9d6dff;
+}
+
+/* Ensure text color remains readable */
+a:hover {
+    text-decoration: none;
+}
+
+.spell-card h4, .spell-card p {
+    color: inherit;
+}
+</style>
 
 <style>
 :root {
