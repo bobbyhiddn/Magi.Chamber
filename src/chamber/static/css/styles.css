@@ -211,3 +211,22 @@ thead th {
 .text-muted {
     color: var(--footer-text) !important;
 }
+
+.navbar-logo {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.navbar-brand:hover .navbar-logo {
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .navbar-logo {
+        height: 25px;
+        width: 25px;
+    }
+}

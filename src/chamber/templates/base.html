@@ -11,6 +11,11 @@
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        .navbar-logo {
+            height: 30px;
+            width: auto;
+        }
+
         .dropdown-submenu {
             position: relative;
         }
@@ -54,7 +59,10 @@
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">Magi.Chamber</a>
+        <div class="navbar-brand d-flex align-items-center">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Magi Chamber Logo" class="navbar-logo mr-2">
+            <a href="/">Magi.Chamber</a>
+        </div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
