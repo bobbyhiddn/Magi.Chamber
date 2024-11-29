@@ -213,8 +213,8 @@ thead th {
 }
 
 .navbar-logo {
-    height: 30px;
-    width: 30px;
+    height: 80px;
+    width: 80px;
     border-radius: 50%;
     object-fit: cover;
     transition: transform 0.2s;
