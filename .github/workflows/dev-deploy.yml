@@ -27,7 +27,7 @@ jobs:
       - name: Update Submodules
         run: |
           # Define submodule paths
-          SUBMODULES=("src/grimoire" "src/chamber/pages")
+          SUBMODULES=("src/modules/grimoire" "src/modules/pages")
           
           # Get root directory
           ROOT_DIR=$(pwd)
