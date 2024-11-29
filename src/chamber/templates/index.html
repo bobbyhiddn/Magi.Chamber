@@ -40,12 +40,20 @@
     </div>
 </div>
 
+
 <div id="quick-start" class="quick-start-section py-5">
     <h2 class="text-center mb-4">Quick Start Guide</h2>
     <div class="code-block bg-light p-4 rounded">
+        <pre class="mb-2"><code># For pypi based installation</code></pre>
         <pre class="mb-2"><code>pip install magi_cli_pypi</code></pre>
+        <pre class="mb-2"><code># For github based installation</code></pre>
         <pre class="mb-2"><code>git clone https://github.com/bobbyhiddn/Magi.CLI</code></pre>
-        <pre class="mb-0"><code>cast ponder #This let's you see what spells are available to your local .orb</code></pre>
+        <pre class="mb-2"><code># To show your default spells</code></pre>
+        <pre class="mb-2"><code>cast</code></pre>
+        <pre class="mb-2"><code># To cast a spell</code></pre>
+        <pre class="mb-2"><code>cast [spell_name]</code></pre>
+        <pre class="mb-2"><code># To see what spells are available from the aether realm of Magi.Chamber</code></pre>
+        <pre class="mb-0"><code>cast ponder #This also let's you see what spells are available to your local .orb</code></pre>
     </div>
 </div>
 
@@ -53,31 +61,66 @@
     <h2 class="text-center mb-4">Featured Spells</h2>
     <div class="row">
         <div class="col-md-3">
-            <div class="spell-card p-3 border rounded">
-                <h4>🔮 aether_inquiry</h4>
-                <p class="small">Call upon AI to answer questions and generate spells</p>
-            </div>
+            <a href="/page/spells/aether-inquiry" class="text-decoration-none">
+                <div class="spell-card p-3 border rounded">
+                    <h4>🔮 aether_inquiry</h4>
+                    <p class="small">Call upon AI to answer questions and generate spells</p>
+                </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="spell-card p-3 border rounded">
-                <h4>📜 pagecraft</h4>
-                <p class="small">Transform web pages into markdown through AI magic</p>
-            </div>
+            <a href="/page/spells/pagecraft" class="text-decoration-none">
+                <div class="spell-card p-3 border rounded">
+                    <h4>📜 pagecraft</h4>
+                    <p class="small">Transform web pages into markdown through AI magic</p>
+                </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="spell-card p-3 border rounded">
-                <h4>✨ runecraft</h4>
-                <p class="small">Generate GUI elements for your bash scripts</p>
-            </div>
+            <a href="/page/spells/runecraft" class="text-decoration-none">
+                <div class="spell-card p-3 border rounded">
+                    <h4>✨ runecraft</h4>
+                    <p class="small">Generate GUI elements for your bash scripts</p>
+                </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="spell-card p-3 border rounded">
-                <h4>📚 scribe</h4>
-                <p class="small">Transcribe files into markdown format</p>
-            </div>
+            <a href="/page/spells/scribe" class="text-decoration-none">
+                <div class="spell-card p-3 border rounded">
+                    <h4>📚 scribe</h4>
+                    <p class="small">Transcribe files into markdown format</p>
+                </div>
+            </a>
         </div>
     </div>
 </div>
+
+<style>
+.spell-card {
+    transition: all 0.3s;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.spell-card:hover {
+    background-color: var(--code-bg);
+    transform: translateY(-3px);
+    border-color: var(--magic-purple);
+}
+
+[data-theme="dark"] .spell-card:hover {
+    border-color: #9d6dff;
+}
+
+/* Ensure text color remains readable */
+a:hover {
+    text-decoration: none;
+}
+
+.spell-card h4, .spell-card p {
+    color: inherit;
+}
+</style>
 
 <style>
 :root {
