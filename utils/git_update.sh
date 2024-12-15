@@ -8,5 +8,11 @@ git submodule update --remote --merge
 if [ -n "$(git status --porcelain)" ]; then
   git add .
   git commit -m "Update submodules"
-  git push origin main
+  echo "Changes committed"
+  echo "Push changes to remote? (y/n)"
+    read -r response
+    if [ "$response" = "y" ]; then
+      git push origin main
+    fi
+      echo "Not pushing changes to remote"
 fi
